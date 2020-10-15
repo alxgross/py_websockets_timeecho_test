@@ -1,6 +1,7 @@
 import asyncio
 import websockets
 from datetime import datetime
+import sys
 
 
 async def start_connection():
@@ -10,6 +11,7 @@ async def start_connection():
         await asyncio.gather(
             msg_sender(myWebSocket),
             msg_recv(myWebSocket),
+#            user_msg(myWebSocket),
             stop_connection(myWebSocket)
             )
 
@@ -30,6 +32,13 @@ async def msg_sender(ws):
         dt = datetime.now()
         await ws.send("die aktuelle Uhrzeit ist: " + dt.strftime("%H:%M:%S"))
         await asyncio.sleep(2)
+        
+async def user_msg():
+#    while ws:
+#        await asyncio.sleep(1)
+#        user_input = await input("Write something: ")
+#        await ws.send("Filler_message")
+    print("blblbl")
 
 async def ws_client():
     open_websocket = await start_connection()
@@ -37,5 +46,12 @@ async def ws_client():
     async for incoming_msg in open_websocket:
         print(incoming_msg)
 
+
 #Sync part
-asyncio.get_event_loop().run_until_complete(ws_client())
+q = asyncio.Queue()
+#fut = asyncio.ensure_future(q.get())
+#fut.add_done_callback(user_msg)
+loop = asyncio.get_event_loop()
+#loop.add_reader(sys.stdin, got_stdin_data, q)
+loop.run_until_complete(ws_client())
+
